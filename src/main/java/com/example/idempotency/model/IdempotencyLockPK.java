@@ -1,21 +1,27 @@
-package com.example.idempotency.models;
+package com.example.idempotency.model;
+
+import jakarta.persistence.Embeddable;
+import jakarta.persistence.Entity;
 
 import java.io.Serializable;
+import java.util.Objects;
 
-public class IdempotencyLockId implements Serializable {
+@Embeddable
+public class IdempotencyLockPK implements Serializable {
 
     private String processId;
     private String idempotencyKey;
 
     // Constructors
-    public IdempotencyLockId() {}
+    public IdempotencyLockPK() {
+    }
 
-    public IdempotencyLockId(String processId, String idempotencyKey) {
+    public IdempotencyLockPK(String processId, String idempotencyKey) {
         this.processId = processId;
         this.idempotencyKey = idempotencyKey;
     }
 
-    // Getters and Setters
+    // Getters and setters
     public String getProcessId() {
         return processId;
     }
@@ -32,23 +38,19 @@ public class IdempotencyLockId implements Serializable {
         this.idempotencyKey = idempotencyKey;
     }
 
-    // Equals and HashCode based on the composite key
+    // equals and hashCode
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        IdempotencyLockId that = (IdempotencyLockId) o;
-
-        if (!processId.equals(that.processId)) return false;
-        return idempotencyKey.equals(that.idempotencyKey);
+        if (!(o instanceof IdempotencyLockPK)) return false;
+        IdempotencyLockPK that = (IdempotencyLockPK) o;
+        return Objects.equals(processId, that.processId) &&
+                Objects.equals(idempotencyKey, that.idempotencyKey);
     }
 
     @Override
     public int hashCode() {
-        int result = processId.hashCode();
-        result = 31 * result + idempotencyKey.hashCode();
-        return result;
+        return Objects.hash(processId, idempotencyKey);
     }
 }
 
